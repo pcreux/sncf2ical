@@ -132,7 +132,7 @@ module Sncf2Ical
       @year = Time.now.year
       @month = month_number(month)
       @day = day
-      @hour = hour.to_i - 1 # UTC + DST FIXME Should use proper timezone mechanism
+      @hour = hour.to_i # UTC wihout DST FIXME Should use proper timezone mechanism
       @minute = minute.to_i
     end
 
