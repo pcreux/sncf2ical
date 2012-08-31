@@ -42,16 +42,17 @@ module Sncf2Ical
     end
 
     def fetch_travel(type)
-      # Aller : 07h39MARSEILLE ST CHARLES53502e ClasseLundi 3 Octobre08h43VALENCE   GARE TGV08h55VALENCE   GARE TGVAutocar696352e Classe09h10VALENCE CENTRE1er&nbsp;
-      match_data = text.match /#{type} : (\d\dh\d\d)(\D+).+(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche) (\d{1,2}) (\D+).*(\d\dh\d\d)(\D+)1er&nbsp;/
+      #Samedi 1 SeptembreAller : 16h15VALENCE   GARE TGV54041\r\n                e\r\n                Classe17h20MARSEILLE SAINT CHARLES
+      #Dimanche 2 SeptembreRetour : 18h08MARSEILLE SAINT CHARLES61301\r\n                e\r\n                Classe19h08VALENCE   GARE TGV
+      match_data = text.match /(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche) (\d{1,2}) (\D+)#{type} : (\d\dh\d\d)(\D+)\d+\s+e\s+Classe(\d\dh\d\d)(\D+)/
 
       if match_data
         Itinerary.new.tap do |i|
-          i.departure_time = match_data[1]
-          i.from = match_data[2]
-          i.date = match_data[3..5].join(' ')
+          i.date = match_data[1..3].join(' ')
+          i.departure_time = match_data[4]
+          i.from = match_data[5].gsub(/\s+/, ' ')
           i.arrival_time = match_data[6]
-          i.to = match_data[7]
+          i.to = match_data[7].gsub(/\s+/, ' ')
         end
       else
         nil
