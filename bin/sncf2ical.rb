@@ -9,6 +9,8 @@ include Sncf2Ical
 
 emails = GmailMessages.new(USERNAME, PASSWORD).ticket_confirmation_emails
 
+puts "Processing #{emails.size} emails"
+
 emails.each_with_index do |email, index|
   begin
     html_email = email.html_part
@@ -17,6 +19,7 @@ emails.each_with_index do |email, index|
     html_email_body = html_email.decoded
 
     EmailParser.new(html_email_body).itineraries.each do |i|
+      puts "Pushing itinerary #{i.inspect}"
       p i.push_to_google_calendar
     end
   rescue
